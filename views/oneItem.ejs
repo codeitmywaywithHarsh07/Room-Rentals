@@ -1,0 +1,81 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= item.title %></title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body> -->
+
+    <%- layout('/layouts/boilerplate.ejs') %>
+
+    <div class="container m-auto row mt-5">
+        <div class="col-9">
+            <div class="oneHeading mb-3">
+                <form action="/listings" method="get">
+                    <button class="backBtn"><i class="fa-solid fa-arrow-left backBtn"></i></button>
+                </form>
+                <h2><%= item.title %></h2>
+            </div>
+
+            <img class="oneImg mb-3" src="<%= item.image.url %>" alt=<%= item.image.filename %>>
+
+            <div class="texts">
+                <div class="left mt-3">
+                    <h3>Rooms in <%= item.location %></h3>
+                    <div class="location">
+                        <i class="fa-solid fa-location-dot fs-5 logo"></i>
+                        <span><%= item.location %></span>, <span><%= item.country %></span>
+                    </div>
+                    <p class="mt-3 pt-3"><%= item.description %></p>
+                </div>
+
+                <div class="right">
+                    <h2>&#8377;<%= item.price.toLocaleString('en-IN') %>/night*</h2>
+                </div>
+            </div>
+        </div>
+        <div class="btns mt-3 mb-5">
+            <form action="/listings/<%= item._id %>/edit" method="get"><button>Edit</button></form>
+            <form action="/listings/<%= item._id %>?_method=DELETE" method="post"><button>Delete</button></form>
+        </div>
+
+        <div class="mb-3 mt-3 col-9">
+            <hr>
+            <h3>Give a Review!</h3>
+            <form action="/listings/<%= item._id %>/reviews" method="post" novalidate class="needs-validation">
+                <div class="mb-3 mt-3">
+                    <label for="rating" class="form-label"></label>
+                    <input class="form-range" min="1" max="5" type="range" name="rating" id="rating">
+                </div>
+                <div class="mb-3 mt-3">
+                    <label for="content" class="form-label"></label>
+                    <textarea class="form-control" name="content" id="content" cols="30" rows="6" placeholder="Write some review." required></textarea>
+                    <div class="invalid-feedback">You need to write something!</div>
+                </div>
+                <div class="btns"><button>Submit</button></div>
+            </form>
+        </div>
+
+        <div class="row mb-3 mt-3 col-9">
+            <hr>
+            <h4>Reviews</h4>
+            <% item.reviews.map((one)=>{ %>
+                <div class="review-box ms-3 col-5 mt-1 mb-2">
+                    <p>
+                        <% for(let i=1;i<=one.rating;i++) {%>
+                        <span>⭐ </span>
+                        <% } %>
+                    </p>
+                    <p><%= one.content.substring(0,100) %></p>
+                    <p class="date_txt"><%= one.createdAt.toLocaleString() %></p>
+                    <form action="/listings/<%= item._id %>/reviews/<%= one._id %>?_method=DELETE" method="post"><button class="btns">Delete</button></form>
+                </div>
+                <% }) %>
+        </div>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,60 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Listing</title>
+</head>
+<body> -->
+    <%- layout('/layouts/boilerplate.ejs') %>
+
+    <div class="row mt-3">
+        <div class="col-8 offset-2">
+            <div class="oneHeading mb-5">
+                <form action="/listings" method="get">
+                    <button class="backBtn"><i class="fa-solid fa-arrow-left backBtn"></i></button>
+                </form>
+                <h2>Add a New Listing</h2>
+            </div>
+
+            <form action="/listings" method="post" novalidate class="needs-validation">
+                <div class="mb-3">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" class="form-control" name="title" placeholder="Give a catchy Title" required>
+                    <div class="valid-feedback">Title is appropriate</div>
+                    <div class="invalid-feedback">Title is Required</div>
+                </div>
+                <div class="row">
+                    <div class="mb-3">
+                        <label for="location" class="form-label">Location</label>
+                        <input type="text" class="form-control" name="location"  placeholder="Location eg- Bandra, Mumbai" required>
+                        <div class="invalid-feedback">Appropriate Location is required</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="country" class="form-label">Country</label>
+                        <input type="text" class="form-control" name="country"  placeholder="Country Name eg- India" required>
+                        <div class="invalid-feedback">Country Name is Required</div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="description" class="form-label">Description</label>
+                    <textarea name="description" class="form-control" id="description" cols="30" rows="10"  placeholder="Give it's Description" required></textarea>
+                    <div class="invalid-feedback">Short Description is required</div>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="form-label">Image URL</label>
+                    <input type="text" class="form-control" name="image" id="image"  placeholder="URL of Image">
+                </div>
+                <div class="mb-3">
+                    <label for="price" class="form-label">Price</label>
+                    <input class="form-control" name="price" id="price"  placeholder="Price(&#8377;)" required>
+                    <div class="invalid-feedback">Price should be over &#8377;100</div>
+                </div>
+                
+                <button class="submit_btn mb-3" type="submit">Submit</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
