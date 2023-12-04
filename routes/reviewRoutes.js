@@ -39,7 +39,8 @@ router.post('/', wrapAsync(async (req,res)=>{
         let newReview = new Review({
             content:req.body.content,
             rating:req.body.rating,
-            createdAt:new Date()
+            createdAt:new Date(),
+            // owner:req.user._id
         });
         current_listing.reviews.push(newReview);
         console.log(current_listing);

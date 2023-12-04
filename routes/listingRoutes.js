@@ -53,6 +53,7 @@ router.get('/', wrapAsync(async (req,res)=>{
 router.get('/new',(req,res)=>{
     // Authentication
     if(!req.isAuthenticated()){
+        req.session.redirectUrl=req.originalUrl;
         req.flash('faliure',"Yopu must be loggedIn first!");
         res.redirect('/login');
     }
@@ -75,7 +76,8 @@ router.post('/', wrapAsync( async (req,res)=>{
         image:{
             url:image,
             filename:"photo"
-        }
+        },
+        owner:req.user._id
     };
     await new Listing(data).save();
     req.flash("success","New Listing Created Successfully!");
@@ -86,7 +88,8 @@ router.post('/', wrapAsync( async (req,res)=>{
 
 router.get('/:id',wrapAsync(async(req,res)=>{
     let {id} = req.params;
-    let item=await Listing.findById(id).populate("reviews");
+    let item=await Listing.findById(id)
+    .populate("reviews").populate('owner');  // Get the Complete Information about Listing
     if(!item){
         req.flash("faliure","Listing you searched for does not exists!");
         res.redirect('/listings');

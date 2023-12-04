@@ -43,10 +43,21 @@ router.get('/login',(req,res)=>{
 
 router.post(
     '/login',  //Route
+    (req,res,next)=>{ //  Middleware to check if redirectUrl consists of different accessed route
+        if(req.session.redirectUrl)
+        {
+            res.locals.redirectUrl=req.session.redirectUrl;
+        }
+        next();
+    },
     passport.authenticate('local',{failureRedirect:'/login',failureFlash:true}), // Authentication Middleware
     async (req,res)=>{   // Callback is executed only if Authentication is successfull
         req.flash('success',"Welcome Back to Room Rentals!");
+        if(res.locals.redirectUrl){
+            res.redirect(`${res.locals.redirectUrl}`);
+        }else{
         res.redirect('/listings');
+        }
     }
 );
 
