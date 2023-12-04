@@ -31,10 +31,6 @@
                             <div><span><%= item.location %></span> | <span><%= item.country %></span></div>
                             <h3>&#8377;<%= item.price.toLocaleString('en-IN') %>/night</h3>
                         </div>
-                        <div class="btns">
-                            <form action="/listings/<%= item._id %>/edit" method="get"><button>Edit</button></form>
-                            <form action="/listings/<%= item._id %>?_method=DELETE" method="post"><button>Delete</button></form>
-                        </div>
                     </div>
                 </a>
                 

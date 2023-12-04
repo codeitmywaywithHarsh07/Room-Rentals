@@ -90,6 +90,7 @@ router.get('/:id',wrapAsync(async(req,res)=>{
     let {id} = req.params;
     let item=await Listing.findById(id)
     .populate("reviews").populate('owner');  // Get the Complete Information about Listing
+    console.log(res.locals.currUser);
     if(!item){
         req.flash("faliure","Listing you searched for does not exists!");
         res.redirect('/listings');
