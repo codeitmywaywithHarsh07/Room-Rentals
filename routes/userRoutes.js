@@ -37,29 +37,30 @@ router.post('/signup',wrapAsync(async (req,res,next)=>{
     }
 }));
 
-router.get('/login',(req,res)=>{
-    res.render('login.ejs');
-});
+// Using router.route(path)
 
-router.post(
-    '/login',  //Route
-    (req,res,next)=>{ //  Middleware to check if redirectUrl consists of different accessed route
-        if(req.session.redirectUrl)
-        {
-            res.locals.redirectUrl=req.session.redirectUrl;
+router.route('/login')
+    .get((req,res)=>{
+        res.render('login.ejs');
+    })
+    .post((req,res,next)=>{ //  Middleware to check if redirectUrl consists of different accessed route
+            if(req.session.redirectUrl)
+            {
+                res.locals.redirectUrl=req.session.redirectUrl;
+            }
+            next();
+        },
+        passport.authenticate('local',{failureRedirect:'/login',failureFlash:true}), // Authentication Middleware
+        async (req,res)=>{   // Callback is executed only if Authentication is successfull
+            req.flash('success',"Welcome Back to Room Rentals!");
+            if(res.locals.redirectUrl){
+                res.redirect(`${res.locals.redirectUrl}`);
+            }else{
+            res.redirect('/listings');
+            }
         }
-        next();
-    },
-    passport.authenticate('local',{failureRedirect:'/login',failureFlash:true}), // Authentication Middleware
-    async (req,res)=>{   // Callback is executed only if Authentication is successfull
-        req.flash('success',"Welcome Back to Room Rentals!");
-        if(res.locals.redirectUrl){
-            res.redirect(`${res.locals.redirectUrl}`);
-        }else{
-        res.redirect('/listings');
-        }
-    }
-);
+    );
+
 
 router.get('/logout',(req,res,next)=>{
     req.logout((err)=>{

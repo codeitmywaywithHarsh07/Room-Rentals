@@ -4,40 +4,10 @@ const Listing = require('../models/listing');
 const wrapAsync = require('../utils/wrapAsync');
 const {listingSchema,reviewSchema} = require('../schema');
 const ExpressError = require('../utils/ExpressError');
+const {isOwner,isLoggedIn,validateListing} = require('../middleware');
+const multer = require('multer');
+const upload = multer({dest:'uploads/'});
 
-
-// Validation Middleware function
-
-const validateListing = (req,res,next)=>{
-    let{title,location,image,description,price,country}=req.body;
-    let data=
-    {
-        title:title,
-        location:location,
-        description:description,
-        price:price,
-        country:country,
-        image:{
-            url:image,
-            filename:"photo"
-        }
-    };
-    let {error} = listingSchema.validate(data);
-    console.log(res);
-    if(error)
-    {
-        throw new ExpressError(400,error);
-    }
-    else{
-        next();
-    }
-}
-
-//Basic Route ----> ' / '
-
-// router.get('/',(req,res)=>{
-//     res.send('This is the Home Route!');
-// });
 
 
 // Index Route ----> ' /listings '
@@ -50,21 +20,13 @@ router.get('/', wrapAsync(async (req,res)=>{
 
 // New Route : '/listings/new' ---> render form for new listing
 
-router.get('/new',(req,res)=>{
-    // Authentication
-    if(!req.isAuthenticated()){
-        req.session.redirectUrl=req.originalUrl;
-        req.flash('faliure',"Yopu must be loggedIn first!");
-        res.redirect('/login');
-    }
-    else{
-        res.render('newListing.ejs');
-    }
+router.get('/new',isLoggedIn,(req,res)=>{
+    res.render('newListing.ejs');
 });
 
 // Create a new Listing
 
-router.post('/', wrapAsync( async (req,res)=>{
+router.post('/', upload.single('image'), wrapAsync( async (req,res)=>{
     let{title,location,image,description,price,country}=req.body;
     let data=
     {
@@ -81,6 +43,7 @@ router.post('/', wrapAsync( async (req,res)=>{
     };
     await new Listing(data).save();
     req.flash("success","New Listing Created Successfully!");
+    console.log(req.file);
     res.redirect('/listings');
 }));
 
@@ -89,8 +52,13 @@ router.post('/', wrapAsync( async (req,res)=>{
 router.get('/:id',wrapAsync(async(req,res)=>{
     let {id} = req.params;
     let item=await Listing.findById(id)
-    .populate("reviews").populate('owner');  // Get the Complete Information about Listing
-    console.log(res.locals.currUser);
+    .populate({
+        path:"reviews",
+        populate:{
+            path:"author"
+        }
+    }).populate('owner');  // Get the Complete Information about Listing
+    // console.log(res.locals.currUser);
     if(!item){
         req.flash("faliure","Listing you searched for does not exists!");
         res.redirect('/listings');
@@ -101,24 +69,19 @@ router.get('/:id',wrapAsync(async(req,res)=>{
 
 // update route : '/listings/:id/edit'
 
-router.get('/:id/edit',wrapAsync(async (req,res)=>{
-    if(!req.isAuthenticated()){
-        req.flash('faliure',"Yopu must be loggedIn first!");
-        res.redirect('/login');
-    }else{
-        let {id} = req.params;
-        let item = await Listing.findById(id);
-        if(!item){
-            throw new ExpressError(400,"Select Valid Data!");
-        }
-        // console.log(item);
-        res.render('editListing.ejs',{item});
+router.get('/:id/edit',isLoggedIn,isOwner,wrapAsync(async (req,res)=>{
+    let {id} = req.params;
+    let item = await Listing.findById(id);
+    if(!item){
+        throw new ExpressError(400,"Select Valid Data!");
     }
+    // console.log(item);
+    res.render('editListing.ejs',{item});
 }));
 
 // PUT request
 
-router.put('/:id',wrapAsync(async (req,res)=>{
+router.put('/:id',isLoggedIn,isOwner,wrapAsync(async (req,res)=>{
     let{title,location,image,description,price,country}=req.body;
     let {id}=req.params;
     let updObj={
@@ -141,17 +104,12 @@ router.put('/:id',wrapAsync(async (req,res)=>{
 
 // DELETE Request
 
-router.delete('/:id',wrapAsync(async (req,res)=>{
-    if(!req.isAuthenticated()){
-        req.flash('faliure',"Yopu must be loggedIn first!");
-        res.redirect('/login');
-    }else{
-        let {id} =req.params;
-        let deletedListing=await Listing.findByIdAndDelete(id);
-        // console.log(deletedListing);
-        req.flash("success","Listing Deleted!");
-        res.redirect('/listings');
-    }
+router.delete('/:id',isLoggedIn,isOwner,wrapAsync(async (req,res)=>{
+    let {id} =req.params;
+    let deletedListing=await Listing.findByIdAndDelete(id);
+    // console.log(deletedListing);
+    req.flash("success","Listing Deleted!");
+    res.redirect('/listings');
 }));
 
 

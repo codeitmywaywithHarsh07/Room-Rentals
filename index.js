@@ -73,7 +73,7 @@ async function main() {
   await mongoose.connect('mongodb://127.0.0.1:27017/room_rentals');
 }
 
-// Defining local variables for ejs Templates
+// Defining local variables for ejs Templates for each and every requests
 app.use((req,res,next)=>{
     res.locals.success=req.flash('success');
     res.locals.faliure=req.flash('faliure');
