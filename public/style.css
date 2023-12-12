@@ -98,6 +98,14 @@ body{
     color: #222222 !important;
 }
 
+.nav-item a{
+    transition: all 0.2s;
+}
+
+.nav-item a:hover{
+    border-bottom: 2px solid darkslateblue;
+}
+
 
 .oneImg{
     width: 100%;

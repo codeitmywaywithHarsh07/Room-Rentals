@@ -86,23 +86,31 @@ router.get('/:id/edit',isLoggedIn,isOwner,wrapAsync(async (req,res)=>{
 
 // PUT request
 
-router.put('/:id',isLoggedIn,isOwner,wrapAsync(async (req,res)=>{
-    let{title,location,image,description,price,country}=req.body;
+router.put('/:id',isLoggedIn,isOwner,upload.single('image'),wrapAsync(async (req,res)=>{
+    console.log(req.file);
+    let{title,location,description,price,country}=req.body;
     let {id}=req.params;
     let updObj={
         title:title,
         location:location,
-        image:{
-            url:image,
-            filename:"photo"
-        },
+        // image:{
+        //     url:req.file.path,
+        //     filename:req.file.filename
+        // },
         description:description,
         price:price,
         country:country
     };
 
-
     let updatedListing=await Listing.findByIdAndUpdate(id,updObj,{new:true,runValidators:true});
+    
+    if(typeof req.file!== "undefined")
+    {
+        updatedListing.image.url=req.file.path;
+        updatedListing.image.filename=req.file.filename;
+        await updatedListing.save();
+    }
+    
     req.flash("success","Listing Updated!");
     res.redirect("/listings");
 }));
