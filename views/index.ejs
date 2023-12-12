@@ -30,6 +30,10 @@
                             <h3><%= item.title %></h3>
                             <div><span><%= item.location %></span> | <span><%= item.country %></span></div>
                             <h3>&#8377;<%= item.price.toLocaleString('en-IN') %>/night</h3>
+                            <div class="likes-count">
+                                <i class="fa-solid fa-heart"></i>
+                                <p><%= item.likes.length %></p>
+                            </div>
                         </div>
                     </div>
                 </a>

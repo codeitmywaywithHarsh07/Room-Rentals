@@ -53,7 +53,10 @@ router.route('/login')
         passport.authenticate('local',{failureRedirect:'/login',failureFlash:true}), // Authentication Middleware
         async (req,res)=>{   // Callback is executed only if Authentication is successfull
             req.flash('success',"Welcome Back to Room Rentals!");
-            if(res.locals.redirectUrl){
+            if(res.locals.redirectUrl && res.locals.redirectUrl.split('/').includes('like')){
+                res.redirect(`/listings`);
+            }
+            else if(res.locals.redirectUrl){
                 res.redirect(`${res.locals.redirectUrl}`);
             }else{
             res.redirect('/listings');

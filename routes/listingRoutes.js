@@ -5,29 +5,26 @@ const wrapAsync = require('../utils/wrapAsync');
 const {listingSchema,reviewSchema} = require('../schema');
 const ExpressError = require('../utils/ExpressError');
 const {isOwner,isLoggedIn,validateListing} = require('../middleware');
+const User = require('../models/user');
 const multer = require('multer');
-const upload = multer({dest:'uploads/'});
+const {storage,cloudinary} = require('../cloudConfig.js');
+const upload = multer({storage:storage});
 
 
 
-// Index Route ----> ' /listings '
-
-router.get('/', wrapAsync(async (req,res)=>{
-    let data=await Listing.find();
-    res.render('index.ejs',{data});
-    console.log(res.locals);
-}));
-
-// New Route : '/listings/new' ---> render form for new listing
-
-router.get('/new',isLoggedIn,(req,res)=>{
-    res.render('newListing.ejs');
-});
-
+// Index Route ----> ' /listings ' , 
 // Create a new Listing
 
-router.post('/', upload.single('image'), wrapAsync( async (req,res)=>{
-    let{title,location,image,description,price,country}=req.body;
+router.route('/')
+.get(wrapAsync(async (req,res)=>{
+    let data=await Listing.find();
+    res.render('index.ejs',{data});
+    console.log(data);
+    console.log(res.locals);
+}))
+.post(isLoggedIn,upload.single('image'),wrapAsync(async (req,res)=>{
+    console.log(req.file);
+    let{title,location,description,price,country}=req.body;
     let data=
     {
         title:title,
@@ -36,16 +33,23 @@ router.post('/', upload.single('image'), wrapAsync( async (req,res)=>{
         price:price,
         country:country,
         image:{
-            url:image,
-            filename:"photo"
+            url:req.file.path,
+            filename:req.file.filename
         },
         owner:req.user._id
     };
     await new Listing(data).save();
+    console.log(data);
     req.flash("success","New Listing Created Successfully!");
-    console.log(req.file);
     res.redirect('/listings');
+    // res.send(req.file);
 }));
+
+// New Route : '/listings/new' ---> render form for new listing
+
+router.get('/new',isLoggedIn,(req,res)=>{
+    res.render('newListing.ejs');
+});
 
 // Show Route ----> '/listings/:id'
 
@@ -64,7 +68,8 @@ router.get('/:id',wrapAsync(async(req,res)=>{
         res.redirect('/listings');
     }
     console.log(item);
-    res.render('oneItem.ejs',{item});
+    let currUser = res.locals.currUser;
+    res.render('oneItem.ejs',{item,currUser});
 }));
 
 // update route : '/listings/:id/edit'
@@ -110,6 +115,38 @@ router.delete('/:id',isLoggedIn,isOwner,wrapAsync(async (req,res)=>{
     // console.log(deletedListing);
     req.flash("success","Listing Deleted!");
     res.redirect('/listings');
+}));
+
+// Like 
+
+router.post('/:id/like',isLoggedIn,wrapAsync(async (req,res)=>{
+    let {id}=req.params;
+    let thisListing = await Listing.findById(id);
+    let thisUser = await User.findById(req.user._id);
+    if (!thisListing.likes.includes(req.user._id)) {
+        thisListing.likes.push(req.user._id);
+        thisUser.favorites.push(id);
+        await thisListing.save();
+        await thisUser.save();
+        req.flash("success","Added to Favorites!");
+    }
+    else{
+        const listing_index = thisListing.likes.indexOf(req.user._id);
+        const user_index = thisUser.favorites.indexOf(id);
+        if (listing_index !== -1) {
+            thisListing.likes.splice(listing_index, 1);
+            await thisListing.save();
+        }
+
+        if (user_index !== -1) {
+            thisUser.favorites.splice(user_index, 1);
+            await thisUser.save();
+        }
+
+        req.flash("success","Removed From Favorites!");
+    }
+    console.log(thisListing.likes);
+    res.redirect(`/listings/${id}`);
 }));
 
 

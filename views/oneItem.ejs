@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= item.title %></title>
+    <title></title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body> -->
@@ -17,7 +17,24 @@
                 <form action="/listings" method="get">
                     <button class="backBtn"><i class="fa-solid fa-arrow-left backBtn"></i></button>
                 </form>
-                <h2><%= item.title %></h2>
+                <div class="item_title">
+                    <h2><%= item.title %></h2>
+                    <h2>
+                        <% if(currUser && currUser.favorites.includes(item._id)) {%>
+                            <span>
+                                <form action="/listings/<%= item._id %>/like" method="post">
+                                    <button class="like_btn"><i class="fa-solid fa-heart"></i></button>
+                                </form>
+                            </span>
+                        <% }else{ %>
+                            <span>
+                                <form action="/listings/<%= item._id %>/like" method="post">
+                                    <button class="like_btn"><i class="fa-regular fa-heart"></i></button>
+                                </form>
+                            </span>
+                        <% } %>
+                    </h2>
+                </div>
             </div>
 
             <img class="oneImg mb-3" src="<%= item.image.url %>" alt=<%= item.image.filename %>>

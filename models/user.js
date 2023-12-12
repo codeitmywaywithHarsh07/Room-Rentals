@@ -5,7 +5,11 @@ const userSchema= new mongoose.Schema({
     email:{
         type:String,
         required:true
-    }
+    },
+    favorites:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Listing"
+    }]
 });
 
 userSchema.plugin(passportLocalMongoose);

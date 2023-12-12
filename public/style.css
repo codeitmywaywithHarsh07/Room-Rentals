@@ -287,3 +287,42 @@ body{
     font-size: 15px;
     font-weight: 600;
 }
+
+.like_btn{
+    background-color: white;
+    border: none;
+}
+
+.like_btn .fa-solid{
+    color: rgb(235, 1, 40);
+}
+
+.like_btn .fa-regular{
+    color: rgb(235, 1, 40);
+}
+
+.item_title{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.likes-count{
+    display: flex;
+    flex-direction: row;
+    gap: -10;
+    align-items: center;
+    color: rgb(235, 1, 40);
+    font-size: x-large;
+}
+
+.likes-count p{
+    font-size: 10px;
+    border-radius: 100%;
+    color: white;
+    background-color: rgb(235, 1, 40);
+    text-align: center;
+    width: 15px;
+    height: 15px;
+}
