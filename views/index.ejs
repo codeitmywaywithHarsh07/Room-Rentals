@@ -17,7 +17,47 @@
         </form>
     </div> -->
     <div class="listings">
-        <h2 class="listing_heading">All Listings</h2>
+
+        <div class="filter_nav">
+            <div class="filters">
+                <div class="filter">
+                    <i class="fa-solid fa-mountain"></i>
+                    <p>Mountains</p>
+                </div>
+                <div class="filter">
+                    <i class="fa-solid fa-fire"></i>
+                    <p>Trending</p>
+                </div>
+                <div class="filter">
+                    <i class="fa-solid fa-umbrella-beach"></i>
+                    <p>Beaches</p>
+                </div>
+                <div class="filter">
+                    <i class="fa-solid fa-person-swimming"></i>
+                    <p>Pools</p>
+                </div>
+                <div class="filter">
+                    <i class="fa-solid fa-cow"></i>
+                    <p>Farms</p>
+                </div>
+                <div class="filter">
+                    <i class="fa-solid fa-city"></i>
+                    <p>Cities</p>
+                </div><div class="filter">
+                    <i class="fa-solid fa-tents"></i>
+                    <p>Camping</p>
+                </div><div class="filter">
+                    <i class="fa-solid fa-gopuram"></i>
+                    <p>Temples</p>
+                </div>
+            </div>
+            <div class="form-check form-switch form-check-reverse tax_switch">
+                <label class="form-check-label" for="flexSwitchCheckDefault">Prices with Taxes</label>
+                <input class="switch form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+            </div>
+        </div>
+
+        <h2 class="listing_heading">Explore</h2>
         <div class="allCards">
             
             <% for(let item of data) { %>
@@ -29,7 +69,10 @@
                         <div class="card_texts">
                             <h3><%= item.title %></h3>
                             <div><span><%= item.location %></span> | <span><%= item.country %></span></div>
-                            <h3>&#8377;<%= item.price.toLocaleString('en-IN') %>/night</h3>
+                            <div class="priceDiv">
+                                <h3>&#8377;<%= item.price.toLocaleString('en-IN') %>/night</h3>
+                                <p class="tax-show"> + 10% GST</p>
+                            </div>
                             <div class="likes-count">
                                 <i class="fa-solid fa-heart"></i>
                                 <p><%= item.likes.length %></p>
@@ -41,4 +84,22 @@
             <% } %>
         </div>
     </div>
+
+    <!-- For the Switch Button -->
+    <script>
+        let taxSwitch = document.getElementById("flexSwitchCheckDefault");
+        let showTax = document.querySelectorAll('.tax-show');
+        taxSwitch.addEventListener('click',()=>{
+            for(one of showTax)
+            {
+                if(one.style.display!="inline")
+                {
+                    one.style.display="inline";
+                }
+                else{
+                    one.style.display="none";
+                }
+            }
+        });
+    </script>
     

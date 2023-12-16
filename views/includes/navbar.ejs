@@ -13,17 +13,32 @@
             <a class="nav-link active" aria-current="page" href="/listings">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">About</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link" href="/listings/new">New Listings</a>
           </li>
         </ul>
 
+        <div class="navbar-nav ms-auto">
+          <form class="d-flex" role="search">
+            <input type="search" id="form1" class="form-control me-2 search-field" placeholder="Search Destinations.."/>
+            <button type="button" class="btn btn-primary" data-mdb-ripple-init>
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
+        </div>
+
         <!-- Signup \ login \ logout -->
 
-        <ul class="navbar-nav ms-auto">
+        <ul class="navbar-nav ms-auto userAuth">
           <% if(flag){ %>
+            <li>
+              <div class="userDropdown">
+                <i class="profileLogo fa-solid fa-circle-user"></i>
+                <div class="userOptions show">
+                    <div><form method="get" action="/favourites/<%= currUser._id %>"><button>Favorites</button></form></div>
+                    <div>Logout</div>
+                </div>
+              </div>
+            </li>
             <li class="nav-item">
               <b><a class="nav-link navLink" href="/logout">LogOut</a></b>
             </li>
@@ -40,3 +55,19 @@
       </div>
     </div>
   </nav>
+
+  <script>
+    let userOptions = document.querySelector('.userOptions');
+    let profileBtn = document.querySelector('.profileLogo');
+    console.log(userOptions.classList.show ? true : false)
+
+    profileBtn.addEventListener('click',()=>{
+      if(!userOptions.classList.contains('show'))
+      {
+        userOptions.classList.add('show');
+      }
+      else{
+        userOptions.classList.remove('show');
+      }
+    });
+  </script>

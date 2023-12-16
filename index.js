@@ -104,6 +104,15 @@ app.use('/',userRoutes);
 app.use('/listings',listingRoutes);
 app.use('/listings/:id/reviews',reviewRoutes);
 
+// For favourites
+
+app.get('/favourites/:userId',wrapAsync(async (req,res)=>{
+    let {userId} = req.params;
+    let thisUser = await User.findById(userId).populate('favorites');
+    console.log(thisUser);
+    res.render('favourites.ejs',{thisUser});
+}))
+
 // Error Handler 
 
 app.use((err,req,res,next)=>{
