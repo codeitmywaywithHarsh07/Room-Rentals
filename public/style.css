@@ -394,13 +394,23 @@ body{
 
 .navbar-nav button{
     border-radius:8px;
-    background-color: darkslateblue;
     border: none;
 }
 
-.navbar-nav button:hover{
-    background-color: darkslateblue;
-    color: rgb(193, 240, 241);
+.notification_btn{
+    border:none;
+    outline: none;
+    background-color: rgb(193, 240, 241);
+    position: relative;
+}
+
+.notify_dot{
+    position: absolute;
+    font-size:0.4rem;
+    display: flex;
+    align-items: flex-start;
+    color: red;
+    right: 1px;
 }
 
 

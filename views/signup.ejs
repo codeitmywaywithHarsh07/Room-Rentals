@@ -2,7 +2,7 @@
 <div class="container m-auto row mt-5">
     <h1 class="col-6 offset-3 mb-3 form-heading">Signup</h1>
     <div class="col-6 offset-3 mt-3">
-        <form action="/signup" method="post" class="needs-validation" novalidate>
+        <form action="/user/signup" method="post" class="needs-validation" novalidate>
             <!-- Username -->
             <div class="mb-3">
                 <label for="username" class="form-label">Username</label>
@@ -22,6 +22,7 @@
             </div>
 
             <button class="submit_btn mb-3" type="submit">Submit</button>
+            <button><i class="fa-brands fa-google"></i><a href="/auth/google">Signup with Google</a></button>
         </form>
     </div>
 </div>

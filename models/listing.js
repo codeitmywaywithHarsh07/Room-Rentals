@@ -15,12 +15,6 @@ const listingSchema = new mongoose.Schema(
             url:{
                 type:String,
                 default:"https://unsplash.com/photos/blue-body-of-water-in-front-of-building-near-trees-during-nighttime-M7GddPqJowg",
-                // set: (v)=>{
-                //     v=
-                //     v===""
-                //     ? "https://unsplash.com/photos/blue-body-of-water-in-front-of-building-near-trees-during-nighttime-M7GddPqJowg"
-                //     :v;
-                // }
             }            
         },
         price:{type: Number},
@@ -53,6 +47,10 @@ listingSchema.post('findOneAndDelete',async (listing)=>{
         console.log(res);
     }
 });
+
+// Enabling Indexing for Text Searches
+
+listingSchema.index({title:'text',description:'text',country:'text',location:'text'});
 
 // Create a Model
 const Listing = mongoose.model("Listing",listingSchema);

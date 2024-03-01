@@ -18,9 +18,9 @@
         </ul>
 
         <div class="navbar-nav ms-auto">
-          <form class="d-flex" role="search">
-            <input type="search" id="form1" class="form-control me-2 search-field" placeholder="Search Destinations.."/>
-            <button type="button" class="btn btn-primary" data-mdb-ripple-init>
+          <form class="d-flex" action="/listings/search" method="GET" role="search">
+            <input type="search" name="query" id="form1" class="form-control me-2 search-field" placeholder="Search Destinations.."/>
+            <button type="search" class="btn btn-primary" data-mdb-ripple-init>
               <i class="fas fa-search"></i>
             </button>
           </form>
@@ -31,24 +31,34 @@
         <ul class="navbar-nav ms-auto userAuth">
           <% if(flag){ %>
             <li>
+              <form action="/user/notifications" method="get">
+                <button class="notification_btn">
+                    <i class="fa-solid fa-bell"></i>
+                    <% if(notifyArr && notifyArr.length) {%>
+                      <i class="fa-solid fa-circle notify_dot"></i>
+                    <% } %>
+                </button>
+              </form>
+            </li>
+            <li>
               <div class="userDropdown">
                 <i class="profileLogo fa-solid fa-circle-user"></i>
                 <div class="userOptions show">
-                    <div><form method="get" action="/favourites/<%= currUser._id %>"><button>Favorites</button></form></div>
+                    <div><form method="get" action="/user/<%= currUser._id %>"><button>Dashboard</button></form></div>
                     <div>Logout</div>
                 </div>
               </div>
             </li>
             <li class="nav-item">
-              <b><a class="nav-link navLink" href="/logout">LogOut</a></b>
+              <b><a class="nav-link navLink" href="/user/logout">LogOut</a></b>
             </li>
           <% } else { %>
             <li class="nav-item">
-              <b><a class="nav-link navLink active" aria-current="page" href="/signup">SignUp</a></b>
+              <b><a class="nav-link navLink active" aria-current="page" href="/user/signup">SignUp</a></b>
             </li>
             
             <li class="nav-item">
-              <b><a class="nav-link navLink" href="/login">LogIn</a></b>
+              <b><a class="nav-link navLink" href="/user/login">LogIn</a></b>
             </li>
           <% } %>          
         </ul>

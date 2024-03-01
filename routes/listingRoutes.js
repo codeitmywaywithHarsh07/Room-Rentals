@@ -19,7 +19,6 @@ router.route('/')
 .get(wrapAsync(async (req,res)=>{
     let data=await Listing.find();
     res.render('index.ejs',{data});
-    console.log(data);
     console.log(res.locals);
 }))
 .post(isLoggedIn,upload.single('image'),wrapAsync(async (req,res)=>{
@@ -50,6 +49,21 @@ router.route('/')
 router.get('/new',isLoggedIn,(req,res)=>{
     res.render('newListing.ejs');
 });
+
+// Route for Text Search
+
+router.get('/search',async(req,res)=>{
+    let {query} = req.query;
+    let listings = await Listing.find({$text:{$search:query}});
+    if(!listings)
+    {
+        next(new ExpressError(500,"Listings Not Found!"));
+    }
+    else{
+        res.render('index.ejs',{data : listings});
+    }
+})
+
 
 // Show Route ----> '/listings/:id'
 

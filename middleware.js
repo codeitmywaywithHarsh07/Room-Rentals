@@ -10,7 +10,7 @@ module.exports.isLoggedIn=(req,res,next)=>{
         req.session.redirectUrl=req.originalUrl;
         console.log(req.originalUrl);
         req.flash('faliure',"You must be loggedIn first!");
-        return res.redirect('/login');
+        return res.redirect('/user/login');
     }
     next();
 }

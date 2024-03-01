@@ -1,8 +1,3 @@
-if(process.env.NODE_ENV != "production")
-{
-    require('dotenv').config();
-}
-
 const express=require('express');
 const app=express();
 const mongoose = require('mongoose');
@@ -18,12 +13,16 @@ const Review = require('./models/review');
 const listingRoutes = require('./routes/listingRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const userRoutes = require('./routes/userRoutes');
+const authRoutes = require('./routes/authRoutes');
 const session = require('express-session');
 const flash = require('connect-flash');
 // Requiring passport and passport-local
 const passport = require('passport');
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
+const Notification = require('./models/notification');
+var GoogleStrategy = require('passport-google-oauth20').Strategy;
+require('dotenv').config();
 
 
 
@@ -48,8 +47,41 @@ app.use(passport.session());
 // Configure Local Strategy
 passport.use(new LocalStrategy(User.authenticate()));
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(
+    new GoogleStrategy(
+      {
+        clientID: process.env.CLIENT_ID,
+        clientSecret: process.env.CLIENT_SECRET,
+        callbackURL: '/auth/google/callback',
+      },
+      (accessToken, refreshToken, profile, done) => {
+        const email = profile.emails[0].value;
+        User.findOne({ email }).then((existingUser) => {
+          if (existingUser) {
+            return done(null, existingUser);
+          } else {
+            new User({
+              email,
+              username: profile.displayName,
+            })
+              .save()
+              .then((user) => done(null, user));
+          }
+        });
+      }
+    )
+  );
+
+// Serialize and deserialize user for both strategies
+passport.serializeUser((user, done) => {
+done(null, user.id);
+});
+
+passport.deserializeUser((id, done) => {
+User.findById(id).then((user) => {
+  done(null, user);
+});
+});
 
 
 
@@ -88,21 +120,28 @@ app.use((req,res,next)=>{
     next();
 });
 
-// Creating a demoUser route
-
-app.get('/demoUser',async(req,res)=>{
-    let fakeUser = new User({
-        email:"harshtripathi20000@gmail.com",
-        username:"harsh70"
-    });
-
-    let regUser = await User.register(fakeUser,"mypassw70");
-    res.send(regUser);
+app.use(async(req,res,next)=>{
+  let currUser = res.locals.currUser;
+  if(currUser){
+      let notifyArr = await Notification.find({recipient:currUser._id,read:false});
+      if(notifyArr.length){
+          res.locals.notifyArr = notifyArr;
+      }
+      else{
+          res.locals.notifyArr = [];
+      }
+  }else{
+      res.locals.notifyArr = [];
+  }
+  console.log(res.locals.notifyArr);
+  next();
 });
 
-app.use('/',userRoutes);
+app.use('/user',userRoutes);
 app.use('/listings',listingRoutes);
 app.use('/listings/:id/reviews',reviewRoutes);
+app.use('/auth',authRoutes);
+
 
 // For favourites
 

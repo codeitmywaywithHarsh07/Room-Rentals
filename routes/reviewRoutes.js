@@ -6,6 +6,7 @@ const Review = require('../models/review');
 const Listing =require('../models/listing');
 const ExpressError = require('../utils/ExpressError');
 const { isLoggedIn, isAuthor } = require('../middleware');
+const Notification = require('../models/notification');
 
 
 
@@ -25,6 +26,9 @@ router.post('/', isLoggedIn, wrapAsync(async (req,res)=>{
     console.log(newReview);
     current_listing.reviews.push(newReview);
     console.log(current_listing);
+    // Storing Notifications
+    const newNotif = new Notification({recipient:current_listing.owner._id,content:"Your Listing got a New Review!",type:"review"});
+    await newNotif.save();
     await newReview.save();
     await current_listing.save();
     req.flash("success","Review Added!");
