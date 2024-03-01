@@ -27,7 +27,7 @@ require('dotenv').config();
 
 
 const sessionOptions = {
-    secret:"harshTripathi",
+    secret:process.env.SECRET,
     resave:false,
     saveUninitialized:true,
     cookie:{
