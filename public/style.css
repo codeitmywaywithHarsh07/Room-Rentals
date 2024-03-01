@@ -397,6 +397,22 @@ body{
     border: none;
 }
 
+.hero-text, .hero-container>form{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero-container{
+    margin: 10% 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
 .notification_btn{
     border:none;
     outline: none;

@@ -137,6 +137,10 @@ app.use(async(req,res,next)=>{
   next();
 });
 
+app.get('/',(req,res)=>{
+  res.render('home.ejs');
+});
+
 app.use('/user',userRoutes);
 app.use('/listings',listingRoutes);
 app.use('/listings/:id/reviews',reviewRoutes);
